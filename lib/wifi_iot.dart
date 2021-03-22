@@ -214,7 +214,8 @@ class WiFiForIoTPlugin {
       {String? password,
       NetworkSecurity security = NetworkSecurity.NONE,
       bool joinOnce = true,
-      bool withInternet = false}) async {
+      bool withInternet = false,
+      bool usePatternMatcher = false}) async {
     if (!Platform.isIOS && !await isEnabled()) await setEnabled(true);
     bool? bResult;
     try {
@@ -223,6 +224,7 @@ class WiFiForIoTPlugin {
         "password": password.toString(),
         "join_once": joinOnce,
         "with_internet": withInternet,
+        "use_pattern_matcher": usePatternMatcher,
         "security":
             security?.toString()?.substring('$NetworkSecurity'.length + 1),
       });

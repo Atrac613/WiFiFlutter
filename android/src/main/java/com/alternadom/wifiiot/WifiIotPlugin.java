@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PatternMatcher;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -639,8 +640,9 @@ public class WifiIotPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
                 String security = poCall.argument("security");
                 Boolean joinOnce = poCall.argument("join_once");
                 Boolean withInternet = poCall.argument("with_internet");
+                Boolean usePatternMatcher = poCall.argument("use_pattern_matcher");
 
-                connectTo(poResult, ssid, password, security, joinOnce, withInternet);
+                connectTo(poResult, ssid, password, security, joinOnce, withInternet, usePatternMatcher);
 
             }
         }.start();
@@ -723,7 +725,7 @@ public class WifiIotPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
                     }
                 }
 
-                connectTo(poResult, ssid, password, security, joinOnce, withInternet);
+                connectTo(poResult, ssid, password, security, joinOnce, withInternet, false);
             }
         }.start();
     }
@@ -905,7 +907,7 @@ public class WifiIotPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
     }
 
     /// Method to connect to WIFI Network
-    private void connectTo(final Result poResult, final String ssid, final String password, final String security, final Boolean joinOnce, final Boolean withInternet) {
+    private void connectTo(final Result poResult, final String ssid, final String password, final String security, final Boolean joinOnce, final Boolean withInternet, final Boolean usePatternMatcher) {
         final Handler handler = new Handler(Looper.getMainLooper());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             final boolean connected = connectToDeprecated(ssid, password, security, joinOnce);
@@ -963,8 +965,13 @@ public class WifiIotPlugin implements FlutterPlugin, ActivityAware, MethodCallHa
             } else {
                 // Make new network specifier
                 final WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder();
-                // set ssid
-                builder.setSsid(ssid);
+                // set Ssid Pattern
+                if (usePatternMatcher) {
+                    builder.setSsidPattern(new PatternMatcher(ssid, PatternMatcher.PATTERN_PREFIX));
+                } else {
+                    // set ssid
+                    builder.setSsid(ssid);
+                }
                 // set security
                 if (security != null && security.toUpperCase().equals("WPA")) {
                     builder.setWpa2Passphrase(password);
