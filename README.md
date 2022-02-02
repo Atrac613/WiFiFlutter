@@ -1,111 +1,229 @@
-<img src="https://raw.githubusercontent.com/alternadom/WiFiFlutter/master/logo/logo%2Bname_color.png" alt="WiFiFlutter" width="255" height="160" />
+<a href="https://wifi.flutternetwork.dev">
+  <p align="center">  
+    <img width="360px" src="logo/logo+name_color.png">
+  </p>
+</a>
 
-[![pub](https://img.shields.io/pub/v/wifi_iot.svg?style=flat-square)](https://pub.dartlang.org/packages/wifi_iot)
+<p align="center">
+  <a href="https://github.com/flutternetwork/WiFiFlutter/actions?query=workflow%3Aall_plugins">
+    <img src="https://github.com/flutternetwork/WiFiFlutter/workflows/all_plugins/badge.svg" alt="all_plugins GitHub Workflow Status"/>
+  </a>
+  <a href="https://codecov.io/gh/flutternetwork/WiFiFlutter/">
+    <img src="https://codecov.io/gh/flutternetwork/WiFiFlutter/graph/badge.svg" alt="all_plugins Coverage"/>
+  </a>
+  <a href="https://gitter.im/flutternetwork/WiFiFlutter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
+    <img src="https://badges.gitter.im/flutternetwork/WiFiFlutter.svg" alt="Join the chat at https://gitter.im/flutternetwork/WiFiFlutter]">
+  </a>
+  <a href="https://github.com/invertase/melos#readme-badge">
+    <img src="https://img.shields.io/badge/maintained%20with-melos-f700ff.svg" alt="Melos" />
+  </a>
+</p>
 
-## Introduction
+---
 
-Plugin Flutter which can handle WiFi connections (AP, STA)
+WiFiFlutter is a suite of Flutter plugins that enable Flutter apps to use various WiFi services.
 
-Becareful, some commands as no effect on iOS because Apple don't let us to do whatever we want...
+> *Note*: WiFiFlutter is going under [reforms](https://github.com/flutternetwork/WiFiFlutter/discussions/229), therefore some plugins might not be available yet. [Feedback](https://github.com/flutternetwork/WiFiFlutter/issues) and [Pull Requests](https://github.com/flutternetwork/WiFiFlutter/pulls) are most welcome!
 
-## WiFi connections
-|                      Description                      |      Android       |         iOS          |
-| :---------------------------------------------------- | :----------------: | :------------------: |
-| Enabling / Disabling WiFi module                      | :warning:(5a) |  :x:  |
-| Getting WiFi status                                   | :white_check_mark: |  :x:  |
-| Scanning for networks, with "already-associated" flag | :white_check_mark: |  :x:  |
-| Connecting / Disconnecting on a network in WPA / WEP  | :white_check_mark:(5b) |  :white_check_mark:(1)  |
-| Registering / Unregistering a WiFi network            | :white_check_mark:(5c) |  :warning:(2)  |
-| Getting informations like :                           | :white_check_mark: |  :warning:(3)  |
-| - SSID                                                | :white_check_mark: |  :white_check_mark:  |
-| - BSSID                                               | :white_check_mark: |  :x:  |
-| - Current signal strength                             | :white_check_mark: |  :x:  |
-| - Frequency                                           | :white_check_mark: |  :x:  |
-| - IP                                                  | :white_check_mark: |  :question:(4)  |
+## Plugins
 
-:white_check_mark:(1) : On iOS, you can only disconnect from a network which has been added by your app. In order to disconnect from a system network, you have to connect to an other!
+**Table of contents:**
 
-:warning:(2) : On iOS, you can forget a WiFi network by connecting to it with the joinOnce flag to true!
+- [For IoT (`wifi_iot`)](#wifi_iot)
+<!-- HIDING until available
+- [Basic (`wifi_basic`)](#wifi_basic)
+-->
+- [Scan (`wifi_scan`)](#wifi_scan)
+<!--
+- [Station (`wifi_sta`)](#wifi_sta)
+- [Access Point / Hotspot (`wifi_ap`)](#wifi_ap)
+- [Aware (`wifi_aware`)](#wifi_aware)
+- [Location / RTT  (`wifi_rtt`)](#wifi_rtt)
+-->
 
-:warning:(3) : On iOS, you can just getting the SSID, or maybe(probably) I'm missing something! 
+---
 
-:question:(4) : I think there is a way to get the IP address but for now, this is not implemented..
+### `wifi_iot`
+> [![wifi_iot][iot_workflow_badge]][iot_workflow] [![wifi_iot][iot_pub_badge]][iot_pub] [![pub points][iot_pub_points_badge]][iot_pub_points]
 
-:warning:(5): Wifi API changes in Android SDK >= 29, restricts certain behaviour:
-  * a. Enable/Disable Wifi Module is deprecated and will always fail [[docs](https://developer.android.com/reference/android/net/wifi/WifiManager#setWifiEnabled(boolean))]. If you  want to open "Wifi Setting" in that case then, set the `shouldOpenSettings: true` when calling `setEnabled`.
-  * b. For Connecting to Wifi, WEP security is deprecated and will always fail, also the network will be disconnected when the app is closed (if permanent network is required(Check :warning:(5c)), use "Register Network" feature) [[docs](https://developer.android.com/guide/topics/connectivity/wifi-bootstrap))]. By default the connection would not have internet access, to connect to network with internet user `withInternet` which is a different API underneath (this API will not disconnect to network after app closes) [[docs](https://developer.android.com/guide/topics/connectivity/wifi-suggest)].
-  * c. Registering Wifi Network, will require user approval - and the network saved would not be controlled by the app (for deletion, updation, etc) [[docs](https://developer.android.com/guide/topics/connectivity/wifi-save-network-passpoint-config)];
+Flutter plugin which can handle WiFi connections (AP, STA).
+> This plugin is only maintained for legacy reasons. Kindly switch to other alternate plugins from this suite.
 
-Additional Wifi protocols on Android side like - Wifi Direct, Wifi Aware, etc are in active discussion at [#140](https://github.com/alternadom/WiFiFlutter/issues/140). Encourage you to engage if you want this features.
+[[View Source][iot_code]]
 
-## Access Point
-|                                       Description                                     |      Android       |         iOS          |
-| :------------------------------------------------------------------------------------ | :----------------: | :------------------: |
-| Getting the status of the Access Point (Disable, disabling, enable, enabling, failed) | :warning:(1b) |  :x:  |
-| Enabling / Disabling Access Point                                                     | :white_check_mark:(1c) |  :x:  |
-| Getting / Setting new credentials (SSID / Password)                                   | :warning:(1b) |  :x:  |
-| Enabling / Disabling the visibility of the SSID Access Point                          | :warning:(1a) |  :x:  |
-| Getting the clients list (IP, BSSID, Device, Reachable)                               | :warning:(1a) |  :x:  |
+#### Platform Support
+| Android | iOS |
+| :-----: | :-: |
+|    ✔️    |  ✔️* |
 
-:warning:(1): Wifi API changes in Android SDK 26 and 29, restricts certain behaviour:
-  * a. This has been deprecated and will always fail for >= 26 Android SDK.
-  * b. This has been deprecated and will always fail for >= 26 Android SDK. There is a way to make "get" methods work for >= 29 Android SDK, but is currently not implemented, request these features if you need them at [#134](https://github.com/alternadom/WiFiFlutter/issues/134).
-  * c. Uses [`startLocalOnlyHotspot` API](https://developer.android.com/reference/android/net/wifi/WifiManager#startLocalOnlyHotspot(android.net.wifi.WifiManager.LocalOnlyHotspotCallback,%20android.os.Handler)) to request enabling or disabling WiFi AP for >= 29 Android SDK. This can only be used to communicate between co-located devices connected to the created WiFi Hotspot. Note - 
-    * (i) Enabling and Disabling WiFi AP needs to request location permission.
-    * (ii) The network created by this method will not have Internet access.
-    * (iii) There's no way for the user to set WiFi AP's SSID and Passphrase, they are automatically generated by the OS.
-    * (iv) This is actually a "request" and not a "command", as the `LocalOnlyHotspot` is shared (potentially) across applications and therefore a request to enable/disable may not not necessarily trigger the immediate execution of it. 
+<sub>*Only supports STA mode.</sub>
 
-For now, there is no way to set the access point on iOS... 
+---
 
-## Xcode build (iOS >= 8.0)
+<!-- HIDING until available
+### `wifi_basic`
+> [![wifi_basic][basic_workflow_badge]][basic_workflow] [![wifi_basic][basic_pub_badge]][basic_pub] [![pub points][basic_pub_points_badge]][basic_pub_points]
 
-To be able to build with Xcode, you must specify `use_frameworks!` in your Podfile to allow building Swift into static libraries.
+Flutter plugin for basic WiFi information and functionalities.
 
-<!---TODO: This a planned breaking change to happen in v1.0.0
-## Android Permissions
-The following permissions are listed according to their intended use:
+[[View Source][basic_code]]
 
-### Required permissions added by the plugin (not need to add this explicitly in your project):
-The physical WiFi module can be used with this feature.
-```xml
-<uses-feature android:name="android.hardware.wifi" />
-```
-Permission to use internet:
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-```
-Permission to access `WifiManager` API:
-```xml
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-```
-Permission to access `ConnectivityManager` API. Useful for managing network state:
-```xml
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-```
-Permission to use location as required to enable or disable WiFi AP:
-```xml
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-```
-There's no need to add the permissions mentioned above to your project, since it's already been added to the plugin.
-### Using WiFi only (need to add these explicitly in your project, if you use these functions)
-Permission to enable or Disable WiFi:
-```xml
-<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-```
-Permission to add WiFi networks:
-```xml
-<uses-permission android:name="android.permission.WRITE_SETTINGS" />
-```
-### Using WiFi AP only (need to add this explicitly in your project, if you use these functions)
-Permission to configure WiFi AP SSID and password:
-```xml
-<uses-permission android:name="android.permission.WRITE_SETTINGS" />
-```
---->
+#### Platform Support
+| Android | iOS |
+| :-----: | :-: |
+|    ❌    |  ❌* |
 
-## Troubleshooting
+<sub>*Only supports getting network info.</sub>
 
-Don't hesitate and come [here](https://github.com/alternadom/WiFiFlutter/issues), we will be happy to help you!
+---
+-->
+
+### `wifi_scan`
+> [![wifi_scan][scan_workflow_badge]][scan_workflow] [![wifi_scan][scan_pub_badge]][scan_pub] [![pub points][scan_pub_points_badge]][scan_pub_points]
+
+Flutter plugin to scan for nearby visible WiFi access points.
+
+[[View Source][scan_code]]
+
+#### Platform Support
+| Android | iOS |
+| :-----: | :-: |
+|   ✔️    |     |
+
+---
+
+<!-- HIDING until available
+### `wifi_sta`
+> [![wifi_sta][sta_workflow_badge]][sta_workflow] [![wifi_sta][sta_pub_badge]][sta_pub] [![pub points][sta_pub_points_badge]][sta_pub_points]
+
+Flutter plugin to connect or disconnect device to a traditional WiFi network.
+
+[[View Source][sta_code]]
+
+#### Platform Support
+| Android | iOS |
+| :-----: | :-: |
+|    ❌    |  ❌  |
+
+---
+
+### `wifi_ap`
+> [![wifi_ap][ap_workflow_badge]][ap_workflow] [![wifi_ap][ap_pub_badge]][ap_pub] [![pub points][ap_pub_points_badge]][ap_pub_points]
+
+Flutter plugin to setup device as a WiFi access point (hotspot).
+
+[[View Source][ap_code]]
+
+#### Platform Support
+| Android | iOS |
+| :-----: | :-: |
+|    ❌    |  ➖ |
+
+---
+
+### `wifi_aware`
+> [![wifi_aware][aware_workflow_badge]][aware_workflow] [![wifi_aware][aware_pub_badge]][aware_pub] [![pub points][aware_pub_points_badge]][aware_pub_points]
+
+Flutter plugin to discover and connect directly to nearby devices without any other type of connectivity between them.
+> This method is [more decenteralized][aware_direct_differences] than WiFi Direct(P2P). Check [official docs][aware_official_docs] to read more about Wi-Fi Aware (Neighbor Awareness Networking or NAN).
+
+[[View Source][aware_code]]
+
+#### Platform Support
+| Android | iOS |
+| :-----: | :-: |
+|    ❌    |  ➖ |
+
+---
+
+### `wifi_rtt`
+> [![wifi_rtt][rtt_workflow_badge]][rtt_workflow] [![wifi_rtt][rtt_pub_badge]][rtt_pub] [![pub points][rtt_pub_points_badge]][rtt_pub_points]
+
+Flutter plugin to measure the distance to nearby RTT-capable Wi-Fi access points and peer Wi-Fi Aware devices. 
+> Check [IEEE_802.11mc][rtt_wikipedia] Wikipedia page to read more about it.
+
+[[View Source][rtt_code]]
+
+#### Platform Support
+| Android | iOS |
+| :-----: | :-: |
+|    ❌    |  ➖ |
+
+---
+-->
+
+## Issues
+
+Please file WiFiFlutter specific issues, bugs, or feature requests in our [issue tracker](https://github.com/flutternetwork/WiFiFlutter/issues/new).
+
+Plugin issues that are not specific to WiFiFlutter can be filed in the [Flutter issue tracker](https://github.com/flutter/flutter/issues/new).
+
+## Contributing
+
+If you wish to contribute a change to any of the existing plugins in this repo,
+please review our [contribution guide](https://github.com/flutternetwork/WiFiFlutter/blob/master/CONTRIBUTING.md)
+and open a [pull request](https://github.com/flutternetwork/WiFiFlutter/pulls).
+
+## Status
+
+This repository is maintained by WiFiFlutter authors. Issues here are answered by maintainers and other community members on GitHub on a best-effort basis.
+
+<!-- links -->
+[iot_code]: https://github.com/flutternetwork/WiFiFlutter/tree/master/packages/wifi_iot
+[iot_workflow]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_iot.yaml
+[iot_workflow_badge]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_iot.yaml/badge.svg
+[iot_pub]: https://pub.dev/packages/wifi_iot
+[iot_pub_badge]: https://img.shields.io/pub/v/wifi_iot.svg
+[iot_pub_points]: https://pub.dev/packages/wifi_iot/score
+[iot_pub_points_badge]: https://badges.bar/wifi_iot/pub%20points
+
+[basic_code]: https://github.com/flutternetwork/WiFiFlutter/tree/master/packages/wifi_basic
+[basic_workflow]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_basic.yaml
+[basic_workflow_badge]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_basic.yaml/badge.svg
+[basic_pub]: https://pub.dev/packages/wifi_basic
+[basic_pub_badge]: https://img.shields.io/pub/v/wifi_basic.svg
+[basic_pub_points]: https://pub.dev/packages/wifi_basic/score
+[basic_pub_points_badge]: https://badges.bar/wifi_basic/pub%20points
+
+[scan_code]: https://github.com/flutternetwork/WiFiFlutter/tree/master/packages/wifi_scan
+[scan_workflow]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_scan.yaml
+[scan_workflow_badge]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_scan.yaml/badge.svg
+[scan_pub]: https://pub.dev/packages/wifi_scan
+[scan_pub_badge]: https://img.shields.io/pub/v/wifi_scan.svg
+[scan_pub_points]: https://pub.dev/packages/wifi_scan/score
+[scan_pub_points_badge]: https://badges.bar/wifi_scan/pub%20points
+
+[sta_code]: https://github.com/flutternetwork/WiFiFlutter/tree/master/packages/wifi_sta
+[sta_workflow]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_sta.yaml
+[sta_workflow_badge]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_sta.yaml/badge.svg
+[sta_pub]: https://pub.dev/packages/wifi_sta
+[sta_pub_badge]: https://img.shields.io/pub/v/wifi_sta.svg
+[sta_pub_points]: https://pub.dev/packages/wifi_sta/score
+[sta_pub_points_badge]: https://badges.bar/wifi_sta/pub%20points
+
+[ap_code]: https://github.com/flutternetwork/WiFiFlutter/tree/master/packages/wifi_ap
+[ap_workflow]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_ap.yaml
+[ap_workflow_badge]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_ap.yaml/badge.svg
+[ap_pub]: https://pub.dev/packages/wifi_ap
+[ap_pub_badge]: https://img.shields.io/pub/v/wifi_ap.svg
+[ap_pub_points]: https://pub.dev/packages/wifi_ap/score
+[ap_pub_points_badge]: https://badges.bar/wifi_ap/pub%20points
+
+[aware_code]: https://github.com/flutternetwork/WiFiFlutter/tree/master/packages/wifi_aware
+[aware_workflow]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_aware.yaml
+[aware_workflow_badge]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_aware.yaml/badge.svg
+[aware_pub]: https://pub.dev/packages/wifi_aware
+[aware_pub_badge]: https://img.shields.io/pub/v/wifi_aware.svg
+[aware_pub_points]: https://pub.dev/packages/wifi_aware/score
+[aware_pub_points_badge]: https://badges.bar/wifi_aware/pub%20points
+[aware_official_docs]: https://www.wi-fi.org/discover-wi-fi/wi-fi-aware
+[aware_direct_differences]: https://www.wi-fi.org/knowledge-center/faq/what-is-the-relationship-between-wi-fi-aware-and-wi-fi-direct
+
+[rtt_code]: https://github.com/flutternetwork/WiFiFlutter/tree/master/packages/wifi_rtt
+[rtt_workflow]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_rtt.yaml
+[rtt_workflow_badge]: https://github.com/flutternetwork/WiFiFlutter/actions/workflows/wifi_rtt.yaml/badge.svg
+[rtt_pub]: https://pub.dev/packages/wifi_rtt
+[rtt_pub_badge]: https://img.shields.io/pub/v/wifi_rtt.svg
+[rtt_pub_points]: https://pub.dev/packages/wifi_rtt/score
+[rtt_pub_points_badge]: https://badges.bar/wifi_rtt/pub%20points
+[rtt_wikipedia]: https://en.wikipedia.org/wiki/IEEE_802.11mc

@@ -22,6 +22,7 @@
 .settings/
 .vscode/
 
+<<<<<<< HEAD
 # Flutter repo-specific
 /bin/cache/
 /bin/mingit/
@@ -37,6 +38,8 @@
 /packages/flutter/coverage/
 version
 
+=======
+>>>>>>> edda31f2411a3268e9c00cc16e8ba8e3fc34338b
 # packages file containing multi-root paths
 .packages.generated
 
@@ -55,6 +58,7 @@ unlinked.ds
 unlinked_spec.ds
 **/pubspec.lock
 
+<<<<<<< HEAD
 # Android related
 **/android/**/gradle-wrapper.jar
 **/android/.gradle
@@ -105,3 +109,7 @@ coverage/
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
+=======
+# Coverage
+coverage/
+>>>>>>> edda31f2411a3268e9c00cc16e8ba8e3fc34338b
