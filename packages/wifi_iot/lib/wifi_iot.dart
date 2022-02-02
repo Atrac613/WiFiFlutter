@@ -431,7 +431,7 @@ class WiFiForIoTPlugin {
       {String? bssid,
       String? password,
       bool joinOnce = true,
-      bool withInternet = false) async {
+      bool withInternet = false}) async {
     // https://en.wikipedia.org/wiki/Service_set_(802.11_network)
     // According to IEEE Std 802.11, a SSID must be between 0 and 32 bytes
     // either with no encoding or UTF8-encoded.
